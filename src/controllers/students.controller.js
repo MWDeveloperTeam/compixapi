@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Student } from "../models/students.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const registerStudent = asyncHandler(async (req, res) => {
   const {
@@ -85,7 +85,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     domicile,
     dateOfBirth,
     gender,
-    email,
+    email, 
     phone,
     programName,
     programCode,
@@ -118,16 +118,18 @@ const deleteStudent = asyncHandler(async (req, res) => {
     throw new ApiError(404, "user not found");
   }
   const {photo}=foundStudent 
-  res.status(200).json(new ApiResponse(200,deletedStudent,"user not found"));
+  const photores =await deleteFromCloudinary(photo)
+  console.log(photores);
+  res.status(200).json(new ApiResponse(200,deletedStudent,"user deleted Successfully"));
 
 });
 
-// Get Student Controller
+// Get all Student Controller
 const getAllStudents = asyncHandler(async (req, res) => {
   const foundStudent = await Student.find();
   res
     .status(200)
-    .json(new ApiResponse(200, foundStudent, "list of all the students found"));
+    .json(new ApiResponse(200, foundStudent, "ok"));
 });
 
 // get one student
@@ -141,4 +143,16 @@ const getOneStudent = asyncHandler(async(req, res) => {
 
 })
 
-export { registerStudent, deleteStudent, getAllStudents,getOneStudent};
+const updateStudent = asyncHandler(async (req, res) => {
+  const _id = req.params.id
+  const{} = req.body
+  const foundStudent = await Student.findOne({_id})
+  if(!foundStudent){
+    throw new ApiError(404, "user not found");
+  }
+  const response = await Student.findByIdAndUpdate({_id}, {
+    
+  }, {new: true})
+})
+
+export { registerStudent, deleteStudent, getAllStudents,getOneStudent,updateStudent};
