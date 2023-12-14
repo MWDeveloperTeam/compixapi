@@ -2,7 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Student } from "../models/students.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 const registerStudent = asyncHandler(async (req, res) => {
   const {
@@ -60,12 +63,11 @@ const registerStudent = asyncHandler(async (req, res) => {
     throw new ApiError(403, "student with this email already exists");
   }
   const foundStudentWithPhone = await Student.findOne({ phone });
-  if(foundStudentWithPhone){
+  if (foundStudentWithPhone) {
     throw new ApiError(403, "phone no already exists");
   }
-  if(phone.length>10 || phone.length<10){
+  if (phone.length > 10 || phone.length < 10) {
     throw new ApiError(400, "phone must be 10 digits");
-
   }
   // image upload check
   const avatarLocalPath = req.files?.photo[0]?.path;
@@ -85,7 +87,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     domicile,
     dateOfBirth,
     gender,
-    email, 
+    email,
     phone,
     programName,
     programCode,
@@ -111,48 +113,87 @@ const registerStudent = asyncHandler(async (req, res) => {
 // delete student controller
 const deleteStudent = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  const foundStudent = await Student.findOne({_id});
+  const foundStudent = await Student.findOne({ _id });
 
-  const deletedStudent = await Student.deleteOne({ _id },{new:true});
-  if(!foundStudent){
+  const deletedStudent = await Student.deleteOne({ _id }, { new: true });
+  if (!foundStudent) {
     throw new ApiError(404, "user not found");
   }
-  const {photo}=foundStudent 
-  const photores =await deleteFromCloudinary(photo)
-  console.log(photores);
-  res.status(200).json(new ApiResponse(200,deletedStudent,"user deleted Successfully"));
-
+  const { photo } = foundStudent;
+  await deleteFromCloudinary(photo);
+  res
+    .status(200)
+    .json(new ApiResponse(200, deletedStudent, "user deleted Successfully"));
 });
 
 // Get all Student Controller
 const getAllStudents = asyncHandler(async (req, res) => {
   const foundStudent = await Student.find();
-  res
-    .status(200)
-    .json(new ApiResponse(200, foundStudent, "ok"));
+  res.status(200).json(new ApiResponse(200, foundStudent, "ok"));
 });
 
 // get one student
-const getOneStudent = asyncHandler(async(req, res) => {
-  const _id =req.params.id
-  const foundStudent = await Student.findOne({_id})
-  if (!foundStudent){
+const getOneStudent = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  const foundStudent = await Student.findOne({ _id });
+  if (!foundStudent) {
     throw new ApiError(404, "user not found");
   }
-    res.status(200).json(new ApiResponse(200,foundStudent,"success"));
-
-})
+  res.status(200).json(new ApiResponse(200, foundStudent, "success"));
+});
 
 const updateStudent = asyncHandler(async (req, res) => {
-  const _id = req.params.id
-  const{} = req.body
-  const foundStudent = await Student.findOne({_id})
-  if(!foundStudent){
+  const _id = req.params.id;
+  const foundStudent = await Student.findOne({ _id });
+  if (!foundStudent) {
     throw new ApiError(404, "user not found");
   }
-  const response = await Student.findByIdAndUpdate({_id}, {
-    
-  }, {new: true})
-})
 
-export { registerStudent, deleteStudent, getAllStudents,getOneStudent,updateStudent};
+  console.log(req.body);
+  const response = await Student.findByIdAndUpdate(
+    { _id },
+    {
+      $set: { ...req.body },
+    },
+    { new: true }
+  );
+  res
+    .status(200)
+    .json(new ApiResponse(200, response, "changes updated successfully"));
+});
+
+// update profile picture
+
+const updateProfile = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  const foundStudent = await Student.findById(_id);
+  const photoLink = foundStudent.photo;
+  const localPhotoPath = req.files?.photo[0]?.path;
+  if (!localPhotoPath) {
+    throw new ApiError(400, "photo is required");
+  }
+  const photo = await uploadOnCloudinary(localPhotoPath);
+  if (!photo) {
+    throw new ApiError(400, "photo upload failed please try after some time");
+  }
+  await deleteFromCloudinary(photoLink);
+  const response = await Student.findByIdAndUpdate(
+    { _id },
+    {
+      $set: { photo: photo.url },
+    },
+    { new: true }
+  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, response, "profile updated successfully"));
+});
+
+export {
+  registerStudent,
+  deleteStudent,
+  getAllStudents,
+  getOneStudent,
+  updateStudent,
+  updateProfile,
+};
