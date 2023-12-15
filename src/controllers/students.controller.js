@@ -144,16 +144,16 @@ const getOneStudent = asyncHandler(async (req, res) => {
 
 const updateStudent = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  const foundStudent = await Student.findOne({ _id });
+  const {} = req.body;
+  const foundStudent = await Student.findOne(_id);
   if (!foundStudent) {
     throw new ApiError(404, "user not found");
   }
 
-  console.log(req.body);
   const response = await Student.findByIdAndUpdate(
-    { _id },
+    _id,
     {
-      $set: { ...req.body },
+      $set: req.body,
     },
     { new: true }
   );
@@ -188,6 +188,47 @@ const updateProfile = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, response, "profile updated successfully"));
 });
+// add academic details
+const addAcademicDetails = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  const { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks } =
+    req.body;
+  const foundStudent = await Student.findById(_id);
+  if (
+    [lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks].some(
+      (student) => student?.trim() === "" || undefined
+    )
+  ) {
+    throw new ApiError(400, "all fields are required");
+  }
+  const addedData = await foundStudent.addAcademicDetails({
+    lastInstituteName,
+    lastBoardCollege,
+    yearOfPassing,
+    stream,
+    marks,
+  });
+  res
+    .status(200)
+    .json(new ApiResponse(200, addedData, "details added successfully"));
+});
+
+// delete Academic details
+const deleteAcadamicDetails = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  const academicId = req.query.academicid;
+  const foundStudent = await Student.findById(_id);
+  const filterdDetails = foundStudent?.academicDetails?.filter(
+    (detail) => detail._id.toString() === academicId
+  );
+  if (filterdDetails.length === 0) {
+    throw new ApiError(400, "details not found");
+  }
+  const deleted = await foundStudent.deleteAcademicDetails(academicId);
+  res
+    .status(200)
+    .json(new ApiResponse(200, deleted, "details deleted successfully"));
+});
 
 export {
   registerStudent,
@@ -196,4 +237,6 @@ export {
   getOneStudent,
   updateStudent,
   updateProfile,
+  addAcademicDetails,
+  deleteAcadamicDetails,
 };
