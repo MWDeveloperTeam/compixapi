@@ -1,0 +1,18 @@
+PORT=8000
+MONGODB_URI=set your mongodb url
+CORS_ORIGIN=*
+ACCESS_TOKEN_SECRET=set your secret token string 
+ACCESS_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_SECRET=set your secret token string
+REFRESH_TOKEN_EXPIRY=10d
+
+CLOUDINARY_API_SECRET=cloudaniray api secret
+CLOUDINARY_API_KEY=your api cloud key
+CLOUDINARY_CLOUD_NAME=your cloud key
+
+
+routes:http://localhost:8000/api/v1/students
+        http://localhost:8000/api/v1/students/:id
+        http://localhost:8000/api/v1/students/upload/:id
+        http://localhost:8000/api/v1/students/acadimicdetails/:id
+        http://localhost:8000/api/v1/students/academicdetails/:id?academicid=academicid
