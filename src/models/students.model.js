@@ -100,6 +100,7 @@ const studentSchema = new Schema(
     photo: {
       type: String, //cloudaniray string
       required: true,
+      default: "avatar.png",
     },
     academicDetails: [
       {

@@ -60,24 +60,24 @@ const registerStudent = asyncHandler(async (req, res) => {
   }
   const foundStudent = await Student.findOne({ email });
   if (foundStudent) {
-    throw new ApiError(403, "student with this email already exists");
+    throw res.status(403).json(new ApiResponse(403, null,"Student with this email already exists"))
   }
   const foundStudentWithPhone = await Student.findOne({ phone });
   if (foundStudentWithPhone) {
-    throw new ApiError(403, "phone no already exists");
+    throw res.status(403).json(new ApiResponse(403, null,"phone no already exists"))
   }
   if (phone.length > 10 || phone.length < 10) {
-    throw new ApiError(400, "phone must be 10 digits");
+    throw res.status(400).json(new ApiResponse(400, null,"phone must be 10 digits"))
   }
   // image upload check
-  const avatarLocalPath = req.files?.photo[0]?.path;
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "photo is required");
-  }
-  const photo = await uploadOnCloudinary(avatarLocalPath);
-  if (!photo) {
-    throw new ApiError(400, "photo upload failed please try after some time");
-  }
+  // const avatarLocalPath = req.files?.photo[0]?.path;
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "photo is required");
+  // }
+  // const photo = await uploadOnCloudinary(avatarLocalPath);
+  // if (!photo) {
+  //   throw new ApiError(400, "photo upload failed please try after some time");
+  // }
   const createdStudent = await Student.create({
     firstName,
     middleName,
@@ -95,8 +95,8 @@ const registerStudent = asyncHandler(async (req, res) => {
     sourceOfInformation,
     qualification,
     acedemicSession,
-    photo: photo.url,
-    acedemicDetails: [
+    // photo: photo.url,
+    academicDetails: [
       { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks },
     ],
   });
@@ -168,7 +168,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   const _id = req.params.id;
   const foundStudent = await Student.findById(_id);
   const photoLink = foundStudent.photo;
-  const localPhotoPath = req.files?.photo[0]?.path;
+  const localPhotoPath = req?.files?.photo[0]?.path;
   if (!localPhotoPath) {
     throw new ApiError(400, "photo is required");
   }
