@@ -20,9 +20,11 @@ app.use(cookieParser());
 // using routes from here
 import userRouter from "./routes/user.routes.js";
 import studentRouter from "./routes/student.routes.js";
+import feesRouter from "./routes/fee.routes.js";
+import examRouter from "./routes/exam.routes.js";
 
 //routes declarations
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1", studentRouter);
+app.use("/api/v1", studentRouter, feesRouter, examRouter);
+// app.use("/api/v1", feesRouter);
 
 export { app };
