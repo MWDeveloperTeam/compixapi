@@ -102,40 +102,37 @@ const studentSchema = new Schema(
       required: true,
       default: "avatar.png",
     },
-    academicDetails: [
-      {
-        lastInstituteName: {
-          type: String,
-          required: true,
-          lowercase: true,
-          trim: true,
-        },
-        lastBoardCollege: {
-          type: String,
-          required: true,
-          lowercase: true,
-          trim: true,
-        },
-        yearOfPassing: {
-          type: Number,
-          required: true,
-          lowercase: true,
-          trim: true,
-        },
-        stream: {
-          type: String,
-          required: true,
-          lowercase: true,
-          trim: true,
-        },
-        marks: {
-          type: String,
-          required: true,
-          lowercase: true,
-          trim: true,
-        },
-      },
-    ],
+
+    lastInstituteName: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    lastBoardCollege: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    yearOfPassing: {
+      type: Number,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    stream: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    marks: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
   },
   { timestamps: true }
 );

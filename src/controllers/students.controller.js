@@ -60,14 +60,22 @@ const registerStudent = asyncHandler(async (req, res) => {
   }
   const foundStudent = await Student.findOne({ email });
   if (foundStudent) {
-    throw res.status(403).json(new ApiResponse(403, null,"Student with this email already exists"))
+    throw res
+      .status(403)
+      .json(
+        new ApiResponse(403, null, "Student with this email already exists")
+      );
   }
   const foundStudentWithPhone = await Student.findOne({ phone });
   if (foundStudentWithPhone) {
-    throw res.status(403).json(new ApiResponse(403, null,"phone no already exists"))
+    throw res
+      .status(403)
+      .json(new ApiResponse(403, null, "phone no already exists"));
   }
   if (phone.length > 10 || phone.length < 10) {
-    throw res.status(400).json(new ApiResponse(400, null,"phone must be 10 digits"))
+    throw res
+      .status(400)
+      .json(new ApiResponse(400, null, "phone must be 10 digits"));
   }
   // image upload check
   // const avatarLocalPath = req.files?.photo[0]?.path;
@@ -96,9 +104,11 @@ const registerStudent = asyncHandler(async (req, res) => {
     qualification,
     acedemicSession,
     // photo: photo.url,
-    academicDetails: [
-      { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks },
-    ],
+    lastInstituteName,
+    lastBoardCollege,
+    yearOfPassing,
+    stream,
+    marks,
   });
   if (!createdStudent) {
     throw new ApiError(500, "Something went wrong while registering the user");
@@ -144,14 +154,14 @@ const getOneStudent = asyncHandler(async (req, res) => {
 
 const updateStudent = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  const {} = req.body;
-  const foundStudent = await Student.findOne(_id);
+  // const {} = req.body;
+  const foundStudent = await Student.findOne({ _id });
   if (!foundStudent) {
     throw new ApiError(404, "user not found");
   }
 
   const response = await Student.findByIdAndUpdate(
-    _id,
+    { _id },
     {
       $set: req.body,
     },
@@ -170,11 +180,21 @@ const updateProfile = asyncHandler(async (req, res) => {
   const photoLink = foundStudent.photo;
   const localPhotoPath = req?.files?.photo[0]?.path;
   if (!localPhotoPath) {
-    throw new ApiError(400, "photo is required");
+    throw res.status(403).json(new ApiResponse(403, null, "photo is required"));
+    // throw new ApiError(400, "photo is required");
   }
   const photo = await uploadOnCloudinary(localPhotoPath);
   if (!photo) {
-    throw new ApiError(400, "photo upload failed please try after some time");
+    throw res
+      .status(403)
+      .json(
+        new ApiResponse(
+          403,
+          null,
+          "photo upload failed please try after some time"
+        )
+      );
+    // throw new ApiError(403, "photo upload failed please try after some time");
   }
   await deleteFromCloudinary(photoLink);
   const response = await Student.findByIdAndUpdate(
@@ -189,46 +209,46 @@ const updateProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, response, "profile updated successfully"));
 });
 // add academic details
-const addAcademicDetails = asyncHandler(async (req, res) => {
-  const _id = req.params.id;
-  const { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks } =
-    req.body;
-  const foundStudent = await Student.findById(_id);
-  if (
-    [lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks].some(
-      (student) => student?.trim() === "" || undefined
-    )
-  ) {
-    throw new ApiError(400, "all fields are required");
-  }
-  const addedData = await foundStudent.addAcademicDetails({
-    lastInstituteName,
-    lastBoardCollege,
-    yearOfPassing,
-    stream,
-    marks,
-  });
-  res
-    .status(200)
-    .json(new ApiResponse(200, addedData, "details added successfully"));
-});
+// const addAcademicDetails = asyncHandler(async (req, res) => {
+//   const _id = req.params.id;
+//   const { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks } =
+//     req.body;
+//   const foundStudent = await Student.findById(_id);
+//   if (
+//     [lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks].some(
+//       (student) => student?.trim() === "" || undefined
+//     )
+//   ) {
+//     throw new ApiError(400, "all fields are required");
+//   }
+//   const addedData = await foundStudent.addAcademicDetails({
+//     lastInstituteName,
+//     lastBoardCollege,
+//     yearOfPassing,
+//     stream,
+//     marks,
+//   });
+//   res
+//     .status(200)
+//     .json(new ApiResponse(200, addedData, "details added successfully"));
+// });
 
 // delete Academic details
-const deleteAcadamicDetails = asyncHandler(async (req, res) => {
-  const _id = req.params.id;
-  const academicId = req.query.academicid;
-  const foundStudent = await Student.findById(_id);
-  const filterdDetails = foundStudent?.academicDetails?.filter(
-    (detail) => detail._id.toString() === academicId
-  );
-  if (filterdDetails.length === 0) {
-    throw new ApiError(400, "details not found");
-  }
-  const deleted = await foundStudent.deleteAcademicDetails(academicId);
-  res
-    .status(200)
-    .json(new ApiResponse(200, deleted, "details deleted successfully"));
-});
+// const deleteAcadamicDetails = asyncHandler(async (req, res) => {
+//   const _id = req.params.id;
+//   const academicId = req.query.academicid;
+//   const foundStudent = await Student.findById(_id);
+//   const filterdDetails = foundStudent?.academicDetails?.filter(
+//     (detail) => detail._id.toString() === academicId
+//   );
+//   if (filterdDetails.length === 0) {
+//     throw new ApiError(400, "details not found");
+//   }
+//   const deleted = await foundStudent.deleteAcademicDetails(academicId);
+//   res
+//     .status(200)
+//     .json(new ApiResponse(200, deleted, "details deleted successfully"));
+// });
 
 export {
   registerStudent,
@@ -237,6 +257,6 @@ export {
   getOneStudent,
   updateStudent,
   updateProfile,
-  addAcademicDetails,
-  deleteAcadamicDetails,
+  // addAcademicDetails,
+  // deleteAcadamicDetails,
 };
