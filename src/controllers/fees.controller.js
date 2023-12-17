@@ -7,10 +7,9 @@ import { Student } from "../models/students.model.js";
 export const addFees = asyncHandler(async (req, res) => {
   const { fullName, email, feeAmount, feeAmountInWords, address, stdId } =
     req.body;
-  console.log(req.body);
   const foundStudent = await Student.findById({ _id: stdId });
   if (!foundStudent) {
-    throw new ApiError(400, "Student not found");
+    throw res.status(400).json(new ApiResponse(400, null, "Student not found"));
   }
   const stdData = [
     fullName,
@@ -21,7 +20,9 @@ export const addFees = asyncHandler(async (req, res) => {
     stdId,
   ];
   if (stdData.some((field) => field?.trim() === "" || undefined)) {
-    throw new ApiError(400, "All fields are required");
+    throw res
+      .status(403)
+      .json(new ApiResponse(400, null, "All fields are required"));
   }
   const createdfee = await Fee.create({
     fullName,
@@ -32,7 +33,15 @@ export const addFees = asyncHandler(async (req, res) => {
     stdId: foundStudent,
   });
   if (!createdfee) {
-    throw new ApiError(500, "Something went wrong while registering the user");
+    throw res
+      .status(500)
+      .json(
+        new ApiResponse(
+          400,
+          null,
+          "Something went wrong while registering the user"
+        )
+      );
   }
   return res
     .status(201)
@@ -41,7 +50,7 @@ export const addFees = asyncHandler(async (req, res) => {
 export const getFees = asyncHandler(async (req, res) => {
   const fees = await Fee.find(req.query).populate("stdId");
   if (!fees) {
-    throw new ApiError(404, "Fees not found");
+    throw res.status(404).json(new ApiResponse(400, null, "Fees not found"));
   }
   res.status(200).json(new ApiResponse(200, fees, "success"));
 });
@@ -51,7 +60,7 @@ export const deleteFees = asyncHandler(async (req, res) => {
   const _id = req.params.id;
   const fees = await Fee.findById(_id);
   if (!fees) {
-    throw new ApiError(404, "Fees not found");
+    throw res.status(404).json(new ApiResponse(400, null, "Fees not found"));
   }
   const deletedfees = await Fee.findByIdAndDelete(_id, { new: true });
 
@@ -64,7 +73,7 @@ export const editFees = asyncHandler(async (req, res) => {
   const _id = req.params.id;
   const fees = await Fee.findById(_id);
   if (!fees) {
-    throw new ApiError(404, "Fees not found");
+    throw res.status(404).json(new ApiResponse(400, null, "Fees not found"));
   }
   const deletedfees = await Fee.findByIdAndUpdate(_id, req.body, { new: true });
 
