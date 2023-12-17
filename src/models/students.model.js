@@ -84,7 +84,7 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    acedemicSession: {
+    academicSession: {
       type: Number,
       required: true,
       lowercase: true,
@@ -99,6 +99,7 @@ const studentSchema = new Schema(
     },
     photo: {
       type: String, //cloudaniray string
+      default: "avatar.png",
       required: true,
     },
     academicDetails: [

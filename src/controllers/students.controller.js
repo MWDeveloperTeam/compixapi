@@ -24,7 +24,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     address,
     sourceOfInformation,
     qualification,
-    acedemicSession,
+    academicSession,
     lastInstituteName,
     lastBoardCollege,
     yearOfPassing,
@@ -48,7 +48,7 @@ const registerStudent = asyncHandler(async (req, res) => {
       address,
       sourceOfInformation,
       qualification,
-      acedemicSession,
+      academicSession,
       lastInstituteName,
       lastBoardCollege,
       yearOfPassing,
@@ -70,14 +70,14 @@ const registerStudent = asyncHandler(async (req, res) => {
     throw new ApiError(400, "phone must be 10 digits");
   }
   // image upload check
-  const avatarLocalPath = req.files?.photo[0]?.path;
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "photo is required");
-  }
-  const photo = await uploadOnCloudinary(avatarLocalPath);
-  if (!photo) {
-    throw new ApiError(400, "photo upload failed please try after some time");
-  }
+  // const avatarLocalPath = req.files?.photo[0]?.path;
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "photo is required");
+  // }
+  // const photo = await uploadOnCloudinary(avatarLocalPath);
+  // if (!photo) {
+  //   throw new ApiError(400, "photo upload failed please try after some time");
+  // }
   const createdStudent = await Student.create({
     firstName,
     middleName,
@@ -94,9 +94,8 @@ const registerStudent = asyncHandler(async (req, res) => {
     address,
     sourceOfInformation,
     qualification,
-    acedemicSession,
-    photo: photo.url,
-    acedemicDetails: [
+    academicSession,
+    academicDetails: [
       { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks },
     ],
   });
@@ -128,7 +127,10 @@ const deleteStudent = asyncHandler(async (req, res) => {
 
 // Get all Student Controller
 const getAllStudents = asyncHandler(async (req, res) => {
-  const foundStudent = await Student.find();
+  const foundStudent = await Student.find(req.query);
+  if (!foundStudent) {
+    throw new ApiError(404, "Student not found");
+  }
   res.status(200).json(new ApiResponse(200, foundStudent, "ok"));
 });
 
@@ -144,7 +146,6 @@ const getOneStudent = asyncHandler(async (req, res) => {
 
 const updateStudent = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  const {} = req.body;
   const foundStudent = await Student.findOne(_id);
   if (!foundStudent) {
     throw new ApiError(404, "user not found");
@@ -168,6 +169,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   const _id = req.params.id;
   const foundStudent = await Student.findById(_id);
   const photoLink = foundStudent.photo;
+
   const localPhotoPath = req.files?.photo[0]?.path;
   if (!localPhotoPath) {
     throw new ApiError(400, "photo is required");

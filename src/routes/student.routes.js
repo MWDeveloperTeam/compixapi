@@ -12,18 +12,7 @@ import {
 } from "../controllers/students.controller.js";
 
 const router = Router();
-router
-  .route("/students")
-  .post(
-    upload.fields([
-      {
-        name: "photo",
-        maxCount: 1,
-      },
-    ]),
-    registerStudent
-  )
-  .get(getAllStudents);
+router.route("/students").post(registerStudent).get(getAllStudents);
 router
   .route("/students/:id")
   .get(getOneStudent)
