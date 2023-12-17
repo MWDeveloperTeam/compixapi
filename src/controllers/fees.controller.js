@@ -39,7 +39,7 @@ export const addFees = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdfee, "student registered Successfully"));
 });
 export const getFees = asyncHandler(async (req, res) => {
-  const fees = await Fee.find(req.query);
+  const fees = await Fee.find(req.query).populate("stdId");
   if (!fees) {
     throw new ApiError(404, "Fees not found");
   }
