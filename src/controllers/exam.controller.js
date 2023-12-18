@@ -21,5 +21,16 @@ export const getExams = asyncHandler(async (req, res) => {
   }
   res.status(201).json(new ApiResponse(201, getExam, "Success"));
 });
-export const deleteExams = asyncHandler(async (req, res) => {});
-export const editExams = asyncHandler(async (req, res) => {});
+export const deleteExams = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  const deletedExam = await Exam.findByIdAndDelete({ _id });
+  if (!deletedExam) {
+    throw res.status(404).json(new ApiResponse(404, null, "exam not found"));
+  }
+  res.status(201).json(new ApiResponse(201, deletedExam, "Success"));
+});
+export const editExams = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "cannot change exam details"));
+});
