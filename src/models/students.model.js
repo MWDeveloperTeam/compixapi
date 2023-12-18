@@ -141,18 +141,4 @@ const studentSchema = new Schema(
   { timestamps: true }
 );
 
-// studentSchema.methods.addAcademicDetails = async function (academicDetails) {
-//   this.academicDetails.push(academicDetails);
-//   return await this.save();
-// };
-
-// studentSchema.methods.deleteAcademicDetails = async function (_id) {
-//   const foundDetails = this.academicDetails.filter(
-//     (field) => field._id.toString() !== _id
-//   );
-//   this.academicDetails = foundDetails;
-
-//   return await this.save();
-// };
-
 export const Student = mongoose.model("Student", studentSchema);
