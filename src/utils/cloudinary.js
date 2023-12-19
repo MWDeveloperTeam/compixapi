@@ -2,7 +2,6 @@
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -26,11 +25,13 @@ const uploadOnCloudinary = async (localFilePath) => {
     return null;
   }
 };
-const deleteFromCloudinary= async(filepath)=>{
-  const fileName = filepath.split("/")
+const deleteFromCloudinary = async (filepath) => {
+  const fileName = filepath.split("/");
 
-  const response = await cloudinary.uploader.destroy(fileName[fileName.length-1].split(".")[0])
-return response
-}
+  const response = await cloudinary.uploader.destroy(
+    fileName[fileName.length - 1].split(".")[0]
+  );
+  return response;
+};
 
-export { uploadOnCloudinary, deleteFromCloudinary};
+export { uploadOnCloudinary, deleteFromCloudinary };

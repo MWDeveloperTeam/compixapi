@@ -84,7 +84,7 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    acedemicSession: {
+    academicSession: {
       type: Number,
       required: true,
       lowercase: true,
@@ -99,10 +99,9 @@ const studentSchema = new Schema(
     },
     photo: {
       type: String, //cloudaniray string
-      required: true,
       default: "avatar.png",
+      required: true,
     },
-
     lastInstituteName: {
       type: String,
       required: true,
@@ -133,22 +132,58 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    lastInstituteName: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    lastBoardCollege: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    yearOfPassing: {
+      type: Number,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    stream: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    examCourse: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      default: " ",
+    },
+    marks: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
   },
   { timestamps: true }
 );
 
-studentSchema.methods.addAcademicDetails = async function (academicDetails) {
-  this.academicDetails.push(academicDetails);
-  return await this.save();
-};
+// studentSchema.methods.addAcademicDetails = async function (academicDetails) {
+//   this.academicDetails.push(academicDetails);
+//   return await this.save();
+// };
 
-studentSchema.methods.deleteAcademicDetails = async function (_id) {
-  const foundDetails = this.academicDetails.filter(
-    (field) => field._id.toString() !== _id
-  );
-  this.academicDetails = foundDetails;
+// studentSchema.methods.deleteAcademicDetails = async function (_id) {
+//   const foundDetails = this.academicDetails.filter(
+//     (field) => field._id.toString() !== _id
+//   );
+//   this.academicDetails = foundDetails;
 
-  return await this.save();
-};
+//   return await this.save();
+// };
 
 export const Student = mongoose.model("Student", studentSchema);
