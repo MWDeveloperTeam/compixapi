@@ -212,6 +212,8 @@ const updateProfile = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, response, "profile updated successfully"));
 });
+
+=======
 // add academic details
 const addAcademicDetails = asyncHandler(async (req, res) => {
   const _id = req.params.id;
@@ -254,6 +256,7 @@ const deleteAcadamicDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, deleted, "details deleted successfully"));
 });
 
+
 export {
   registerStudent,
   deleteStudent,
@@ -261,6 +264,8 @@ export {
   getOneStudent,
   updateStudent,
   updateProfile,
+
+=======
   // addAcademicDetails,
   // deleteAcadamicDetails,
 };

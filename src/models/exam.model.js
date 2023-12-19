@@ -34,13 +34,16 @@ const examSchema = new Schema(
             trim: true,
           },
         ],
-        answer: {},
+        answer: {
+          type: String,
+          lowercase: true,
+          trim: true,
+        },
       },
     ],
     stdId: {
-      type: String,
-      lowercase: true,
-      trim: true,
+      type: Schema.Types.ObjectId,
+      ref: "Student",
     },
   },
   { timestamps: true }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
+
   // addAcademicDetails,
   // deleteAcadamicDetails,
   deleteStudent,
@@ -27,8 +28,12 @@ router.route("/students/upload/:id").patch(
   ]),
   updateProfile
 );
+
+
+
 // router
 //   .route("/students/academicdetails/:id")
 //   .post(addAcademicDetails)
 //   .delete(deleteAcadamicDetails);
+
 export default router;
