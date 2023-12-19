@@ -163,6 +163,13 @@ const studentSchema = new Schema(
       trim: true,
       default: " ",
     },
+    examTaken: [
+      {
+        type: String,
+        lowercase: true,
+        trim: true,
+      },
+    ],
     marks: {
       type: String,
       required: true,
@@ -172,5 +179,10 @@ const studentSchema = new Schema(
   },
   { timestamps: true }
 );
+
+studentSchema.methods.addExamTaken = async function (data) {
+  await this.examTaken.push(data);
+  return await this.save();
+};
 
 export const Student = mongoose.model("Student", studentSchema);

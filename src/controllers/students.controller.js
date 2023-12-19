@@ -213,7 +213,6 @@ const updateProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, response, "profile updated successfully"));
 });
 
-=======
 // add academic details
 const addAcademicDetails = asyncHandler(async (req, res) => {
   const _id = req.params.id;
@@ -256,6 +255,15 @@ const deleteAcadamicDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, deleted, "details deleted successfully"));
 });
 
+export const examTaken = asyncHandler(async (req, res) => {
+  const _id = req.body.id;
+  const foundUser = await Student.findById({ _id });
+  if (!foundUser) {
+    throw res.status(404).json(new ApiResponse(404, null, "user not found"));
+  }
+  const resData = await foundUser.addExamTaken(req.body.course);
+  res.status(200).json(new ApiResponse(400, resData, "Successfully"));
+});
 
 export {
   registerStudent,
@@ -265,7 +273,6 @@ export {
   updateStudent,
   updateProfile,
 
-=======
   // addAcademicDetails,
   // deleteAcadamicDetails,
 };
