@@ -151,28 +151,9 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    stream: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-    },
+
     examCourse: {
       type: String,
-      lowercase: true,
-      trim: true,
-      default: " ",
-    },
-    examTaken: [
-      {
-        type: String,
-        lowercase: true,
-        trim: true,
-      },
-    ],
-    marks: {
-      type: String,
-      required: true,
       lowercase: true,
       trim: true,
     },
@@ -186,10 +167,14 @@ const studentSchema = new Schema(
   },
   { timestamps: true }
 );
-
-studentSchema.methods.addExamTaken = async function (data) {
-  await this.examTaken.push(data);
-  return await this.save();
+studentSchema.methods.setToExamTaken = async function (course) {
+  await this.examTaken.push(course);
+  await this.save();
+  return this.examTaken;
 };
-
+studentSchema.methods.removeFromExamTaken = async function (course) {
+  this.examTaken = this.examTaken.filter((field) => field !== course);
+  await this.save();
+  return this.examTaken;
+};
 export const Student = mongoose.model("Student", studentSchema);

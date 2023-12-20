@@ -1,15 +1,14 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
-  // addAcademicDetails,
-  // deleteAcadamicDetails,
   deleteStudent,
-  examTaken,
   getAllStudents,
   getOneStudent,
   registerStudent,
   updateProfile,
   updateStudent,
+  addExamTaken,
+  deleteExamTaken,
 } from "../controllers/students.controller.js";
 
 const router = Router();
@@ -29,7 +28,7 @@ router.route("/students/upload/:id").patch(
   updateProfile
 );
 
-router.route("/students/examTaken").post(examTaken);
+router.route("/examTaken").post(addExamTaken).delete(deleteExamTaken);
 
 // router
 //   .route("/students/academicdetails/:id")
