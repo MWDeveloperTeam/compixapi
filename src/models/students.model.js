@@ -137,6 +137,13 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    examTaken: [
+      {
+        type: String,
+        lowercase: true,
+        trim: true,
+      },
+    ],
   },
   { timestamps: true }
 );
