@@ -7,10 +7,11 @@ import { Student } from "../models/students.model.js";
 export const addFees = asyncHandler(async (req, res) => {
   const { fullName, email, feeAmount, feeAmountInWords, address, stdId } =
     req.body;
-  const foundStudent = await Student.findById({ _id: stdId });
-  if (!foundStudent) {
-    throw res.status(400).json(new ApiResponse(400, null, "Student not found"));
-  }
+  // const foundStudent = await Student.findById({ _id: stdId });
+  // if (!foundStudent) {
+  //   throw res.status(400).json(new ApiResponse(400, null, "Student not found"));
+  // }
+  console.log(req.body);
   const stdData = [
     fullName,
     email,
@@ -30,7 +31,7 @@ export const addFees = asyncHandler(async (req, res) => {
     feeAmount,
     feeAmountInWords,
     address,
-    stdId: foundStudent,
+    stdId,
   });
   if (!createdfee) {
     throw res
