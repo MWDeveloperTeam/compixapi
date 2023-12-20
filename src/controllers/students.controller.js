@@ -166,13 +166,14 @@ const getOneStudent = asyncHandler(async (req, res) => {
   }
   res.status(200).json(new ApiResponse(200, foundStudent, "success"));
 });
+
 // ==============================================================================
 const updateStudent = asyncHandler(async (req, res) => {
   const _id = req.params.id;
   // const {} = req.body;
-  const foundStudent = await Student.findOne({ _id });
+  const foundStudent = await Student.findById({ _id });
   if (!foundStudent) {
-    throw res.status(403).json(new ApiResponse(404, null, "Student not found"));
+    throw res.status(404).json(new ApiResponse(404, null, "Student not found"));
   }
   const response = await Student.findByIdAndUpdate(
     { _id },
@@ -214,57 +215,65 @@ const updateProfile = asyncHandler(async (req, res) => {
 });
 
 // add academic details
-const addAcademicDetails = asyncHandler(async (req, res) => {
-  const _id = req.params.id;
-  const { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks } =
-    req.body;
-  const foundStudent = await Student.findById(_id);
-  if (
-    [lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks].some(
-      (student) => student?.trim() === "" || undefined
-    )
-  ) {
-    throw new ApiError(400, "all fields are required");
-  }
-  const addedData = await foundStudent.addAcademicDetails({
-    lastInstituteName,
-    lastBoardCollege,
-    yearOfPassing,
-    stream,
-    marks,
-  });
-  res
-    .status(200)
-    .json(new ApiResponse(200, addedData, "details added successfully"));
-});
+// const addAcademicDetails = asyncHandler(async (req, res) => {
+//   const _id = req.params.id;
+//   const { lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks } =
+//     req.body;
+//   const foundStudent = await Student.findById(_id);
+//   if (
+//     [lastInstituteName, lastBoardCollege, yearOfPassing, stream, marks].some(
+//       (student) => student?.trim() === "" || undefined
+//     )
+//   ) {
+//     throw new ApiError(400, "all fields are required");
+//   }
+//   const addedData = await foundStudent.addAcademicDetails({
+//     lastInstituteName,
+//     lastBoardCollege,
+//     yearOfPassing,
+//     stream,
+//     marks,
+//   });
+//   res
+//     .status(200)
+//     .json(new ApiResponse(200, addedData, "details added successfully"));
+// });
 
-// delete Academic details
-const deleteAcadamicDetails = asyncHandler(async (req, res) => {
-  const _id = req.params.id;
-  const academicId = req.query.academicid;
-  const foundStudent = await Student.findById(_id);
-  const filterdDetails = foundStudent?.academicDetails?.filter(
-    (detail) => detail._id.toString() === academicId
-  );
-  if (filterdDetails.length === 0) {
-    throw new ApiError(400, "details not found");
-  }
-  const deleted = await foundStudent.deleteAcademicDetails(academicId);
-  res
-    .status(200)
-    .json(new ApiResponse(200, deleted, "details deleted successfully"));
-});
-
-export const examTaken = asyncHandler(async (req, res) => {
+// // delete Academic details
+// const deleteAcadamicDetails = asyncHandler(async (req, res) => {
+//   const _id = req.params.id;
+//   const academicId = req.query.academicid;
+//   const foundStudent = await Student.findById(_id);
+//   const filterdDetails = foundStudent?.academicDetails?.filter(
+//     (detail) => detail._id.toString() === academicId
+//   );
+//   if (filterdDetails.length === 0) {
+//     throw new ApiError(400, "details not found");
+//   }
+//   const deleted = await foundStudent.deleteAcademicDetails(academicId);
+//   res
+//     .status(200)
+//     .json(new ApiResponse(200, deleted, "details deleted successfully"));
+// });
+export const addExamTaken = asyncHandler(async (req, res) => {
   const _id = req.body.id;
-  const foundUser = await Student.findById({ _id });
-  if (!foundUser) {
-    throw res.status(404).json(new ApiResponse(404, null, "user not found"));
+  const foundStudent = await Student.findById({ _id });
+  if (!foundStudent) {
+    throw res.status(404).json(new ApiResponse(404, null, "Student not found"));
   }
-  const resData = await foundUser.addExamTaken(req.body.course);
-  res.status(200).json(new ApiResponse(400, resData, "Successfully"));
+  const response = foundStudent.setToExamTaken(req.body.course);
+  res.status(200).json(new ApiResponse(200, response, "success"));
 });
 
+export const deleteExamTaken = asyncHandler(async (req, res) => {
+  const _id = req.body.id;
+  const foundStudent = await Student.findById({ _id });
+  if (!foundStudent) {
+    throw res.status(404).json(new ApiResponse(404, null, "Student not found"));
+  }
+  const response = await foundStudent.removeFromExamTaken(req.body.course);
+  res.status(200).json(new ApiResponse(200, response, "success"));
+});
 export {
   registerStudent,
   deleteStudent,
@@ -272,7 +281,4 @@ export {
   getOneStudent,
   updateStudent,
   updateProfile,
-
-  // addAcademicDetails,
-  // deleteAcadamicDetails,
 };
