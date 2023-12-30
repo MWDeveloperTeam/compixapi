@@ -13,6 +13,11 @@ const examSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    course: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     answers: [
       {
         type: String,
