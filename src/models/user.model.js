@@ -25,19 +25,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
-    avatar: {
-      type: String, //cloudaniray string
-      required: true,
-    },
-    coverImage: {
-      type: String,
-    },
-    watchHistory: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Video",
-      },
-    ],
+    // avatar: {
+    //   type: String, //cloudaniray string
+    //   required: true,
+    // },
+    // coverImage: {
+    //   type: String,
+    // },
     password: {
       type: String,
       required: [true, "password is required"],
