@@ -19,6 +19,11 @@ const studentSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    fullName: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     fatherName: {
       type: String,
       required: true,
