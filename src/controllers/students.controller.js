@@ -89,10 +89,13 @@ const registerStudent = asyncHandler(async (req, res) => {
   // if (!photo) {
   //   throw new ApiError(400, "photo upload failed please try after some time");
   // }
+
+  const fullName = firstName + " " + middleName + " " + lastName;
   const createdStudent = await Student.create({
     firstName,
     middleName,
     lastName,
+    fullName,
     fatherName,
     nationality,
     domicile,
@@ -266,12 +269,11 @@ export const addExamTaken = asyncHandler(async (req, res) => {
 });
 
 export const deleteExamTaken = asyncHandler(async (req, res) => {
-  const _id = req.body.id;
-  const foundStudent = await Student.findById({ _id });
+  const foundStudent = await Student.findById(req.query.id);
   if (!foundStudent) {
     throw res.status(404).json(new ApiResponse(404, null, "Student not found"));
   }
-  const response = await foundStudent.removeFromExamTaken(req.body.course);
+  const response = await foundStudent.removeFromExamTaken(req.query.course);
   res.status(200).json(new ApiResponse(200, response, "success"));
 });
 export {
