@@ -10,14 +10,18 @@ import {
   addExamTaken,
   deleteExamTaken,
 } from "../controllers/students.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
-router.route("/students").post(registerStudent).get(getAllStudents);
+router
+  .route("/students")
+  .post(verifyJWT, registerStudent)
+  .get(verifyJWT, getAllStudents);
 router
   .route("/students/:id")
-  .get(getOneStudent)
-  .delete(deleteStudent)
-  .patch(updateStudent);
+  .get(verifyJWT, getOneStudent)
+  .delete(verifyJWT, deleteStudent)
+  .patch(verifyJWT, updateStudent);
 router.route("/students/upload/:id").patch(
   upload.fields([
     {

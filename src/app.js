@@ -25,6 +25,6 @@ import examRouter from "./routes/exam.routes.js";
 
 //routes declarations
 app.use("/api/v1", studentRouter, feesRouter, examRouter);
-// app.use("/api/v1", feesRouter);
+app.use("/api/v1/user", feesRouter);
 
 export { app };
