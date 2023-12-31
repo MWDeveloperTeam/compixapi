@@ -67,7 +67,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  if (!email && !username) {
+  if (!(email ||username)) {
     throw new ApiError(400, "username or email is required");
   }
   const foundUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -78,7 +78,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (!isPasswordValid) {
     throw new ApiError(401, "invaled user credentials");
   }
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+  const { accessToken, refreshToken } = await foundUser.generateAccessAndRefreshToken(
     foundUser._id
   );
   const logedInUser = await User.findById(foundUser._id).select(
